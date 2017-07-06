@@ -27,7 +27,7 @@ class HomeScreen extends React.Component {
     loadFirebaseOnce()
   }
 
-  componentDidMount(){
+  setFirebase(){
     firebase.database().ref('users/' + new Date().getTime()).set({
       username: 'Pascal',
       email: 'aaa@bbb.ch'
@@ -47,8 +47,8 @@ class HomeScreen extends React.Component {
                   </Button>
                 </Col>
                 <Col>
-                  <Button block onPress={() => navigate('Register')} title="Lets Register">
-                    <Text>Register2</Text>
+                  <Button block onPress={() => setFirebase()} title="setFirebase">
+                    <Text>setFirebase</Text>
                   </Button>
                 </Col>
               </Grid>
