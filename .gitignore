@@ -59,3 +59,4 @@ ios/fastlane/
 # ios/fastlane/screenshots
 
 Material/
+firebase-secret.json

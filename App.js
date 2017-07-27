@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppRegistry, StatusBar } from 'react-native'
+import { Alert, AppRegistry, StatusBar } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import { Col, Row, Grid } from 'react-native-easy-grid'
@@ -7,16 +7,18 @@ import * as Animatable from 'react-native-animatable'
 
 import * as firebase from 'firebase'
 import R from 'ramda'
+import * as keys from './firebase-secret'
 
 import { Register } from './components/Register'
 
 const loadFirebaseOnce = R.once(() => {
   const config = {
-    apiKey: "AIzaSyCnGkI8kO1eRPPx7xnovrtpr-NMPP7CAQc",
-    authDomain: "superapp-f8a4e.firebaseapp.com",
-    databaseURL: "https://superapp-f8a4e.firebaseio.com",
-    storageBucket: "gs://superapp-f8a4e.appspot.com",
+    apiKey: keys.apiKey,
+    authDomain: keys.authDomain,
+    databaseURL: keys.databaseURL,
+    storageBucket: keys.storageBucket,
   }
+
   firebase.initializeApp(config)
   const database = firebase.database()
 })
@@ -28,10 +30,16 @@ class HomeScreen extends React.Component {
   }
 
   setFirebase(){
-    firebase.database().ref('users/' + new Date().getTime()).set({
+    const timestamp = new Date().getTime()
+    firebase.database().ref('users/'+timestamp).set({
       username: 'Pascal',
+      timestamp: timestamp,
       email: 'aaa@bbb.ch'
     })
+  }
+
+  getData(cb) {
+    firebase.database().ref('users/').on('value', snap => cb(snap.val()))
   }
 
   render() {
@@ -47,8 +55,13 @@ class HomeScreen extends React.Component {
                   </Button>
                 </Col>
                 <Col>
-                  <Button block onPress={() => setFirebase()} title="setFirebase">
+                  <Button block onPress={() => this.setFirebase()} title="setFirebase">
                     <Text>setFirebase</Text>
+                  </Button>
+                </Col>
+                <Col>
+                  <Button block onPress={() => this.getData((val) => Alert.alert(JSON.stringify(val)))} title="getFirebase">
+                    <Text>getFirebase</Text>
                   </Button>
                 </Col>
               </Grid>
