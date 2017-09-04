@@ -10,7 +10,7 @@ export class Register extends React.Component {
       <Container>
         <Content>
           <Button block light onPress={() => navigate('Home')} title="Lets go Home">
-            <Text>Home test</Text>
+            <Text>Home test new</Text>
           </Button>
         </Content>
       </Container>
