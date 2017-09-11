@@ -1,6 +1,6 @@
 import React from 'react'
-import { Alert, AppRegistry, AsyncStorage, StatusBar } from 'react-native'
-import { Container, Content, Button, Text } from 'native-base'
+import { Alert, AppRegistry, AsyncStorage, Image, StatusBar, StyleSheet } from 'react-native'
+import { Container, Content, Button, View, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import { Col, Row, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
@@ -89,6 +89,40 @@ class HomeScreen extends React.Component {
   render() {
     const { navigate } = this.props.navigation
         return (
+          <Image source={require('./assets/bg.jpg')} style={styles.backgroundImage}>
+            <Container style={styles.text}>
+              <StatusBar hidden={true} />
+              <Content>
+                <Grid>
+                  <Col>
+                    <Button block light onPress={() => navigate('Register')} title="Lets Register">
+                      <Animatable.Text animation="fadeIn" iterationCount='infinite'>Register</Animatable.Text>
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button block onPress={() => this.setFirebase()} title="setFirebase">
+                      <Text>setFirebase</Text>
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button block onPress={() => this.getData((val) => Alert.alert(JSON.stringify(val)) )} title="getFirebase">
+                      <Text>getFirebase</Text>
+                    </Button>
+                  </Col>
+                </Grid>
+
+                <Grid>
+                  <Col>
+                    <Button block onPress={() => this.updateData()} title="updateFirebase">
+                      <Text>updateFirebase</Text>
+                    </Button>
+                  </Col>
+                </Grid>
+              </Content>
+            </Container>
+          </Image>
+
+          /*
           <Container>
             <StatusBar hidden={true} />
             <Content>
@@ -109,6 +143,7 @@ class HomeScreen extends React.Component {
                   </Button>
                 </Col>
               </Grid>
+
               <Grid>
                 <Col>
                   <Button block onPress={() => this.updateData()} title="updateFirebase">
@@ -118,9 +153,24 @@ class HomeScreen extends React.Component {
               </Grid>
             </Content>
           </Container>
+          */
         )
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0)',
+      top: 50
+  },
+  backgroundImage: {
+    resizeMode: 'cover',
+    flex: 1,
+    width: null,
+    height: null
+  }
+})
 
 const ReactNavigator = StackNavigator({
   Home: { screen: HomeScreen },
