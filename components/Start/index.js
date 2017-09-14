@@ -1,9 +1,8 @@
 import React from 'react'
-import { Alert, AsyncStorage, StyleSheet } from 'react-native'
-import { Container, Content, Button, Image, Text } from 'native-base'
+import { ActivityIndicator, Alert, AsyncStorage, StyleSheet } from 'react-native'
+import { Container, Content, Button, Text } from 'native-base'
 import { Col, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
-import CachedImage from 'react-native-cached-image'
 
 import * as firebase from 'firebase'
 import R from 'ramda'
@@ -25,6 +24,9 @@ export class StartScreen extends React.Component {
   constructor (props) {
     super(props)
     loadFirebaseOnce()
+    this.state = {
+      isImageLoading: true
+    }
   }
 
   async setFirebase () {
@@ -84,17 +86,29 @@ export class StartScreen extends React.Component {
     }
   }
 
+  imageIsLoaded () {
+    this.setState({isImageLoading: false})
+    this.refs.imgFade.transitionTo({opacity: 1})
+  }
+
   render () {
     const { navigate } = this.props.navigation
-    return (
-      <CachedImage source={{ uri: 'https://www.emmaandjohn.ch/sspes/bg.jpg' }} style={styles.backgroundImage}>
-        <Container style={styles.text}>
-          <Content>
+    const { isImageLoading } = this.state
 
+    return (
+      <Container style={isImageLoading ? styles.bgBlack : styles.wrapContainer}>
+        <Animatable.Image
+          ref='imgFade'
+          onLoad={() => this.imageIsLoaded()}
+          source={require('../../assets/bg2.jpg')}
+          backgroundColor={'black'}
+          style={styles.backgroundImage}
+        >
+          <Content>
             <Grid>
               <Col>
                 <Button block light onPress={() => navigate('Register')} title='Lets Register'>
-                  <Animatable.Text animation='fadeIn'>Register</Animatable.Text>
+                  <Animatable.Text animation='fadeIn' iterationCount='infinite'>Register</Animatable.Text>
                 </Button>
               </Col>
             </Grid>
@@ -123,23 +137,29 @@ export class StartScreen extends React.Component {
               </Col>
             </Grid>
 
+            <Grid>{ isImageLoading ? <ActivityIndicator /> : null }</Grid>
           </Content>
-        </Container>
-      </CachedImage>
+        </Animatable.Image>
+      </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  text: {
+  wrapContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0)',
-    top: 50
+    backgroundColor: 'rgba(0,0,0,0)'
+  },
+  bgBlack: {
+    flex: 1,
+    backgroundColor: 'rgba(130,97,108,1)'
   },
   backgroundImage: {
-    resizeMode: 'cover',
+    opacity: 0,
+    resizeMode: 'repeat',
     flex: 1,
     width: null,
-    height: null
+    height: null,
+    paddingTop: 50
   }
 })
