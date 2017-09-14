@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Alert, AsyncStorage, StyleSheet } from 'react-native'
+import { ActivityIndicator, Alert, AsyncStorage, Image, StyleSheet } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { Col, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
@@ -98,6 +98,7 @@ export class StartScreen extends React.Component {
     return (
       <Container style={isImageLoading ? styles.bgBlack : styles.wrapContainer}>
         <Animatable.Image
+          resizeMode='cover'
           ref='imgFade'
           onLoad={() => this.imageIsLoaded()}
           source={require('../../assets/bg2.jpg')}
@@ -156,7 +157,6 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     opacity: 0,
-    resizeMode: 'repeat',
     flex: 1,
     width: null,
     height: null,
