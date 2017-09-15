@@ -87,8 +87,8 @@ export class StartScreen extends React.Component {
   }
 
   imageIsLoaded () {
-    this.setState({isImageLoading: false})
-    this.refs.imgFade.transitionTo({opacity: 1})
+    /*this.setState({isImageLoading: false})
+    this.refs.imgFade.transitionTo({opacity: 1})*/
   }
 
   render () {
@@ -96,15 +96,14 @@ export class StartScreen extends React.Component {
     const { isImageLoading } = this.state
 
     return (
-      <Container style={isImageLoading ? styles.bgBlack : styles.wrapContainer}>
-        <Animatable.Image
-          resizeMode='cover'
-          ref='imgFade'
-          onLoad={() => this.imageIsLoaded()}
-          source={require('../../assets/bg2.jpg')}
-          backgroundColor={'black'}
-          style={styles.backgroundImage}
-        >
+      <Image
+        resizeMode='cover'
+        ref='imgFade'
+        source={require('../../assets/bg.jpg')}
+        backgroundColor={'black'}
+        style={styles.backgroundImage}
+      >
+      <Container style={styles.wrapContainer}>
           <Content>
             <Grid>
               <Col>
@@ -140,8 +139,8 @@ export class StartScreen extends React.Component {
 
             <Grid>{ isImageLoading ? <ActivityIndicator /> : null }</Grid>
           </Content>
-        </Animatable.Image>
       </Container>
+    </Image>
     )
   }
 }
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(130,97,108,1)'
   },
   backgroundImage: {
-    opacity: 0,
+    opacity: 1,
     flex: 1,
     width: null,
     height: null,
