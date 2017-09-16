@@ -19,27 +19,24 @@ export class HomeScreen extends React.Component {
   render () {
     const { navigate } = this.props.navigation
     return (
-      <Container>
+      <Container style={styles.wrapper}>
         <StatusBar hidden />
         <Content>
 
-          <Grid>
-            <Row style={styles.title}>
-              <Text>Schere, Stein, Papier, Echse, Spok</Text>
+          <Grid style={styles.title}>
+            <Row>
+              <Text style={styles.titleText}>Schere, Stein, Papier, Echse, Spock</Text>
             </Row>
           </Grid>
 
           <Grid>
-            <Row style={styles.row}>
-              <Button block light onPress={() => this.setLocalization('de') && navigate('Start')}>
+            <Row style={styles.rowTop}>
+              <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('de') && navigate('Start')}>
                 <Text>Deutsch</Text>
               </Button>
             </Row>
-          </Grid>
-
-          <Grid>
             <Row style={styles.row}>
-              <Button block light onPress={() => this.setLocalization('en') && navigate('Start')}>
+              <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('en') && navigate('Start')}>
                 <Text>English</Text>
               </Button>
             </Row>
@@ -52,18 +49,30 @@ export class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    padding: 5
+  },
   title: {
     flex: 1,
-    backgroundColor: 'rgba(130,97,108,1)',
     paddingTop: 50,
     height: 200,
     borderWidth: 1,
     borderColor: '#000000'
   },
-  row: {
+  titleText: {
     flex: 1,
-    backgroundColor: 'rgba(130,97,108,1)',
-    paddingTop: 50
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
+  row: {
+    marginTop: 10
+  },
+  rowTop: {
+    marginTop: 35
+  },
+  btnFullWidth: {
+    flex: 1
   }
 })
 
