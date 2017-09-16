@@ -1,28 +1,71 @@
 import React from 'react'
-import { ActivityIndicator, AppRegistry, Animated, Easing, StatusBar } from 'react-native'
+import { AppRegistry, Alert, AsyncStorage, Animated, Easing, StatusBar, StyleSheet } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
-// import { Col, Row, Grid } from 'react-native-easy-grid'
+import { Row, Grid } from 'react-native-easy-grid'
 
 import { StartScreen } from './components/Start'
 import { RegisterScreen } from './components/Register'
 
-class HomeScreen extends React.Component {
+export class HomeScreen extends React.Component {
+  async setLocalization (t) {
+    try {
+      await AsyncStorage.setItem('ls_localization', t)
+    } catch (error) {
+      Alert.alert(error)
+    }
+  }
+
   render () {
     const { navigate } = this.props.navigation
     return (
       <Container>
         <StatusBar hidden />
         <Content>
-          <ActivityIndicator />
-          <Button block light onPress={() => navigate('Start')} title='Lets go to Startscreen'>
-            <Text>go to start screen</Text>
-          </Button>
+
+          <Grid>
+            <Row style={styles.title}>
+              <Text>Schere, Stein, Papier, Echse, Spok</Text>
+            </Row>
+          </Grid>
+
+          <Grid>
+            <Row style={styles.row}>
+              <Button block light onPress={() => this.setLocalization('de') && navigate('Start')}>
+                <Text>Deutsch</Text>
+              </Button>
+            </Row>
+          </Grid>
+
+          <Grid>
+            <Row style={styles.row}>
+              <Button block light onPress={() => this.setLocalization('en') && navigate('Start')}>
+                <Text>English</Text>
+              </Button>
+            </Row>
+          </Grid>
+
         </Content>
       </Container>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  title: {
+    flex: 1,
+    backgroundColor: 'rgba(130,97,108,1)',
+    paddingTop: 50,
+    height: 200,
+    borderWidth: 1,
+    borderColor: '#000000'
+  },
+  row: {
+    flex: 1,
+    backgroundColor: 'rgba(130,97,108,1)',
+    paddingTop: 50
+  }
+})
 
 const ReactNavigator = StackNavigator({
   Home: { screen: HomeScreen },
