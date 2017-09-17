@@ -4,6 +4,7 @@ import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import { Row, Grid } from 'react-native-easy-grid'
 
+import { checkNetworkConnection } from './components/_NetworkConnection'
 import { StartScreen } from './components/Start'
 import { RegisterScreen } from './components/Register'
 
@@ -14,6 +15,10 @@ export class HomeScreen extends React.Component {
     } catch (error) {
       Alert.alert(error)
     }
+  }
+
+  componentWillMount () {
+    checkNetworkConnection()
   }
 
   render () {
