@@ -4,7 +4,9 @@ export function checkNetworkConnection () {
   NetInfo.isConnected.fetch().then(isConnected => {
   })
   function handleFirstConnectivityChange (isConnected) {
-    Alert.alert('Your Network Connection is ' + (isConnected ? 'online' : 'offline!'))
+    if (!isConnected) {
+      Alert.alert('No network connection! The application needs network connection to work properly.')
+    }
     NetInfo.isConnected.removeEventListener(
       'connectionChange',
       handleFirstConnectivityChange

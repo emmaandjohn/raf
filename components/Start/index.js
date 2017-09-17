@@ -6,26 +6,10 @@ import { Container, Content, Button } from 'native-base'
 import { Col, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
 
-import * as firebase from 'firebase'
-import R from 'ramda'
-import * as keys from '../../firebase-secret'
-
-const loadFirebaseOnce = R.once(() => {
-  const config = {
-    apiKey: keys.apiKey,
-    authDomain: keys.authDomain,
-    databaseURL: keys.databaseURL,
-    storageBucket: keys.storageBucket
-  }
-
-  firebase.initializeApp(config)
-})
-
 export class StartScreen extends React.Component {
   constructor (props) {
     super(props)
 
-    loadFirebaseOnce()
     this.state = {
       isLoaded: false
     }
