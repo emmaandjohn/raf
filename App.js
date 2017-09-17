@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppRegistry, Alert, AsyncStorage, Animated, Easing, StatusBar, StyleSheet } from 'react-native'
+import { AppRegistry, Alert, AsyncStorage, Animated, Easing, Image, StatusBar, StyleSheet } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import { Row, Grid } from 'react-native-easy-grid'
@@ -9,45 +9,80 @@ import { StartScreen } from './components/Start'
 import { RegisterScreen } from './components/Register'
 
 export class HomeScreen extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isInitialStart: false,
+      isLoading: true
+    }
+  }
   async setLocalization (t) {
     try {
       await AsyncStorage.setItem('ls_localization', t)
     } catch (error) {
-      Alert.alert(error)
+      Alert.alert('Something went wrong while updating Localization-Settings')
     }
   }
 
   componentWillMount () {
     checkNetworkConnection()
+    AsyncStorage.getItem('ls_localization').then((localization) => {
+      if (localization !== null) {
+        this.setState({
+          isInitialStart: false,
+          isLoading: false
+        })
+      } else {
+        this.setState({
+          isInitialStart: true,
+          isLoading: false
+        })
+      }
+    })
   }
 
   render () {
     const { navigate } = this.props.navigation
+    const { isLoading, isInitialStart } = this.state
+
+    // Wait until AsyncStorage loaded
+    if (isLoading) {
+      return (
+        <Container style={styles.wrapper}>
+          <StatusBar hidden />
+        </Container>
+      )
+    }
+
+    // 1. isInitialStart === true: First start of the App: Show Initial Screen, choose language and register a new User
+    // 2. isInitialStart === false: Navigate directly to gamescreen (User is already registered)
     return (
       <Container style={styles.wrapper}>
         <StatusBar hidden />
-        <Content>
+        { isInitialStart
+          ? <Content>
 
-          <Grid style={styles.title}>
-            <Row>
-              <Text style={styles.titleText}>Schere, Stein, Papier, Echse, Spock</Text>
-            </Row>
-          </Grid>
+            <Grid style={styles.title}>
+              <Row>
+                <Text style={styles.titleText}>Schere, Stein, Papier, Echse, Spock</Text>
+              </Row>
+            </Grid>
 
-          <Grid>
-            <Row style={styles.rowTop}>
-              <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('de') && navigate('Start')}>
-                <Text>Deutsch</Text>
-              </Button>
-            </Row>
-            <Row style={styles.row}>
-              <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('en') && navigate('Start')}>
-                <Text>English</Text>
-              </Button>
-            </Row>
-          </Grid>
+            <Grid>
+              <Row style={styles.rowTop}>
+                <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('de') && navigate('Start')}>
+                  <Text>Deutsch</Text>
+                </Button>
+              </Row>
+              <Row style={styles.row}>
+                <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('en') && navigate('Start')}>
+                  <Text>English</Text>
+                </Button>
+              </Row>
+            </Grid>
 
-        </Content>
+          </Content>
+        : navigate('Register') }
       </Container>
     )
   }

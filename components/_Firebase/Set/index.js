@@ -4,31 +4,28 @@ import { loadFirebaseOnce } from '../InitializeFirebase'
 
 import * as firebase from 'firebase'
 
-export function setData () {
+export function setData (firebaseStartingPath, firebaseParentPath, firebaseUserDataObject) {
   checkNetworkConnection()
   loadFirebaseOnce()
 
-  // Set user profile data
-  const timestamp = new Date().getTime().toString()
-  const randomNumber = (Math.round(Math.random() * (100000 - 1)) + 1).toString()
+  if ((typeof firebaseUserDataObject === 'object') && (firebaseUserDataObject !== null)) {
+    // 1. REGISTER NEW USER
+    // Push the Onject to Firebase (e.g. 'users/123456756' + '{username: eaj, email: eaj@eaj.com}')
+    firebase.database().ref(firebaseStartingPath + firebaseParentPath).set({
+      username: firebaseUserDataObject.username,
+      email: firebaseUserDataObject.email,
+      language: firebaseUserDataObject.language
+    })
 
-  const userid = timestamp + randomNumber
-  const username = 'sample name'
-  const email = 'sample@sample.com'
-
-  // Store Firebase data
-  firebase.database().ref('users/' + userid).set({
-    userid: userid,
-    username: username,
-    email: email
-  })
-
-  // Local Storage for persistent data
-  try {
-    AsyncStorage.setItem('ls_userid', userid)
-    AsyncStorage.setItem('ls_username', username)
-    AsyncStorage.setItem('ls_email', email)
-  } catch (error) {
-    Alert.alert(error)
+    // Local Storage for persistent data
+    try {
+      AsyncStorage.setItem('ls_userid', firebaseParentPath)
+      AsyncStorage.setItem('ls_username', firebaseUserDataObject.username)
+      AsyncStorage.setItem('ls_email', firebaseUserDataObject.email)
+    } catch (error) {
+      Alert.alert('Error: Something went wrong while trying to save a new local profile!')
+    }
+  } else {
+    Alert.alert('Error: Something went wrong while trying to push to the database!')
   }
 }

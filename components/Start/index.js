@@ -6,10 +6,11 @@ import { Container, Content, Button } from 'native-base'
 import { Col, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
 
+import { setData } from '../_Firebase/Set'
+
 export class StartScreen extends React.Component {
   constructor (props) {
     super(props)
-
     this.state = {
       isLoaded: false
     }
@@ -17,7 +18,31 @@ export class StartScreen extends React.Component {
 
   componentWillMount () {
     AsyncStorage.getItem('ls_localization').then((localization) => {
-      localization === 'de' ? t.setLanguage('de') : t.setLanguage('en')
+      t.setLanguage(localization)
+      AsyncStorage.getItem('ls_userid').then((localStorageUserid) => {
+        if (localStorageUserid === null) {
+          // No userId in localStorage present, therefore register a new user
+          const timestamp = new Date().getTime().toString()
+          const randomNumber = (Math.round(Math.random() * (100000 - 1)) + 1).toString()
+
+          const userid = timestamp + randomNumber
+          const username = ''
+          const email = ''
+
+          const firebaseStartingPath = 'users/'
+          const firebaseParentPath = userid
+          const firebaseUserDataObject = {
+            username: username,
+            email: email,
+            language: localization
+          }
+
+          // Push the initial user-data Object to firebase (e.g. 'users/' + '12345687' + '{username: eaj, email: eaj@eaj.com}')
+          setData(firebaseStartingPath, firebaseParentPath, firebaseUserDataObject)
+        }
+      })
+
+      // As soon ls_localization is loaded, show the start screen with the choosen language
       this.setState({
         isLoaded: true
       })
@@ -27,7 +52,6 @@ export class StartScreen extends React.Component {
   render () {
     const { navigate } = this.props.navigation
     const { isLoaded } = this.state
-    // () => this.getData((val) => Alert.alert(JSON.stringify(val)))
 
     return (
       <Container>
