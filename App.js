@@ -92,4 +92,4 @@ const ReactNavigator = StackNavigator({
 }
 )
 
-AppRegistry.registerComponent('RichAndFame', () => ReactNavigator)
+AppRegistry.registerComponent('SSPES', () => ReactNavigator)

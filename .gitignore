@@ -20,11 +20,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-*.cer
-*.certSigningRequest
-*.p12
-*.mobileprovision
-*.zip
 project.xcworkspace
 
 # Android/IntelliJ
@@ -53,10 +48,6 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Gitignore.md
 
-ios/fastlane/
-# ios/fastlane/report.xml
-# ios/fastlane/Preview.html
-# ios/fastlane/screenshots
-
-Material/
-firebase-secret.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
