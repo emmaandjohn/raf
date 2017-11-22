@@ -1,7 +1,7 @@
 import React from 'react'
 import { translations as t } from '../_Localization'
 
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage, ImageBackground, StyleSheet } from 'react-native'
 import { Container, Content, Button } from 'native-base'
 import { Col, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
@@ -54,31 +54,40 @@ export class StartScreen extends React.Component {
     const { isLoaded } = this.state
 
     return (
-      <Container>
-        { isLoaded
-          ? <Content>
-            <Grid>
-              <Col>
-                <Button block light onPress={() => navigate('Register')} title='Lets Register'>
-                  <Animatable.Text animation='fadeIn' iterationCount='infinite'>{t.welcome}</Animatable.Text>
-                </Button>
-              </Col>
-            </Grid>
-          </Content>
-          : null }
-      </Container>
+      <ImageBackground source={require('../../assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
+        <Container style={styles.container}>
+          { isLoaded
+            ? <Content>
+              <Grid>
+                <Col>
+                  <Button block light onPress={() => navigate('Register')} title='Lets Register'>
+                    <Animatable.Text animation='fadeIn' iterationCount='infinite'>{t.welcome}</Animatable.Text>
+                  </Button>
+                </Col>
+              </Grid>
+            </Content>
+            : null }
+        </Container>
+      </ImageBackground>
     )
   }
 }
 
-/*
+const StyleFlexAndWidth = {
+  flex: 1,
+  width: null,
+  height: null
+}
+
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    ...StyleFlexAndWidth
+  },
   backgroundImage: {
-    opacity: 1,
-    flex: 1,
-    width: null,
-    height: null,
-    paddingTop: 50
+    ...StyleFlexAndWidth
+  },
+  backgroundImage2: {
+    resizeMode: 'cover'
   }
 })
-*/
