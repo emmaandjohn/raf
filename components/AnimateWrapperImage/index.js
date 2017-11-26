@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from 'react-native'
+import { Image, ImageBackground } from 'react-native'
 import * as Animatable from 'react-native-animatable'
 
 export class AnimateWrapperImage extends React.Component {

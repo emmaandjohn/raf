@@ -1,9 +1,10 @@
 import React from 'react'
-import { AppRegistry, Alert, AsyncStorage, Animated, Easing, Image, ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { AppRegistry, Alert, AsyncStorage, Animated, Easing, Image, ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import { Row, Grid } from 'react-native-easy-grid'
 import { default as Sound } from 'react-native-sound'
+import * as Animatable from 'react-native-animatable'
 
 import { checkNetworkConnection } from './components/_NetworkConnection'
 import { StartScreen } from './components/Start'
@@ -31,7 +32,7 @@ export class HomeScreen extends React.Component {
   playSndSetLocalizationAndRedirect (sndFile, loop, navigate) {
     sndFile.play()
     loop ? sndFile.setNumberOfLoops(-1) : null
-    this.setLocalization('de') // set language and go to start screen
+    // this.setLocalization('de') // set language and go to start screen
     navigate ? navigate('Start') : null
   }
 
@@ -80,6 +81,14 @@ export class HomeScreen extends React.Component {
     // 1. isInitialStart === true: First start of the App: Show Initial Screen
     // 2. isInitialStart === false: Navigate directly to gamescreen (User is already registered)
     return (
+      <Container>
+      <AnimateWrapperImage
+        style={styles.blackOverlay}
+        source={require('./assets/bg-black.jpg')}
+        animation={'fadeOut'}
+        duration={3000}
+        delay={1000}
+      />
       <ImageBackground source={require('./assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
         <TouchableWithoutFeedback onPress={() => this.playSndSetLocalizationAndRedirect(sndBtn, false, navigate)}>
           <Container style={styles.container}>
@@ -101,69 +110,46 @@ export class HomeScreen extends React.Component {
                 <AnimateWrapperImage
                   style={styles.stein}
                   source={require('./assets/start-card-stone.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'zoomInDown'}
+                  animation={startAnimationLoop ? 'pulse' : 'fadeInLeftBig'}
                   iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 2000 : 1000}
+                  duration={startAnimationLoop ? 4400 : 1500}
                 />
 
                 <AnimateWrapperImage
                   style={styles.schere}
                   source={require('./assets/start-card-schere.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'zoomInDown'}
+                  animation={startAnimationLoop ? 'pulse' : 'fadeInLeft'}
                   iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 1700 : 1000}
+                  duration={startAnimationLoop ? 4500 : 1700}
                 />
                 <AnimateWrapperImage
                   style={styles.papier}
                   source={require('./assets/start-card-paper.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'zoomInDown'}
+                  animation={startAnimationLoop ? 'pulse' : 'fadeInDown'}
                   iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 1800 : 1000}
+                  duration={startAnimationLoop ? 4600 : 1600}
                 />
                 <AnimateWrapperImage
                   style={styles.echse}
                   source={require('./assets/start-card-echse.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'zoomInDown'}
+                  animation={startAnimationLoop ? 'pulse' : 'fadeInRight'}
                   iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 2000 : 1000}
+                  duration={startAnimationLoop ? 4200 : 1700}
                 />
                 <AnimateWrapperImage
                   style={styles.spock}
                   source={require('./assets/start-card-spock.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'zoomInDown'}
+                  animation={startAnimationLoop ? 'pulse' : 'fadeInRightBig'}
                   iterationCount={startAnimationLoop ? 'infinite' : 1}
+                  duration={startAnimationLoop ? 4300 : 1500}
                   onAnimationEnd={() => this.setState({startAnimationLoop: true})}
-                  duration={startAnimationLoop ? 1800 : 1000}
                 />
-
-                { /*
-                <Grid style={styles.rowTop}>
-                  <Row>
-                    <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('de') && navigate('Start')}>
-                      <Text>Start</Text>
-                    </Button>
-                  </Row>
-                </Grid>
-
-                <Grid>
-                  <Row style={styles.rowTop}>
-                    <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('de') && navigate('Start')}>
-                      <Text>Deutsch</Text>
-                    </Button>
-                  </Row>
-                  <Row style={styles.row}>
-                    <Button style={styles.btnFullWidth} block light onPress={() => this.setLocalization('en') && navigate('Start')}>
-                      <Text>English</Text>
-                    </Button>
-                  </Row>
-                </Grid>
-                */ }
-
               </Content>
-            : navigate('Start') }
+            : null /*navigate('Start')*/ }
           </Container>
         </TouchableWithoutFeedback>
       </ImageBackground>
+      </Container>
     )
   }
 }
@@ -188,6 +174,9 @@ const styles = StyleSheet.create({
   },
   backgroundImage2: {
     resizeMode: 'cover'
+  },
+  blackOverlay: {
+    top: 0, bottom: 0, left: 0, right: 0, position: 'absolute', zIndex: 3, resizeMode: 'stretch'
   },
 
   titleWrapper: { flex: 1, width: 600, alignSelf: 'center', marginBottom: 300 },
