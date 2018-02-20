@@ -93,7 +93,7 @@ export class HomeScreen extends React.Component {
         <TouchableWithoutFeedback onPress={() => this.playSndSetLocalizationAndRedirect(sndBtn, false, navigate)}>
           <Container style={styles.container}>
             <StatusBar hidden />
-            { isInitialStart
+            { /* !isInitialStart
               ? <Content>
 
                 <Grid style={styles.titleWrapper}>

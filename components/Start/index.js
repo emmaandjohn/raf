@@ -26,8 +26,8 @@ export class StartScreen extends React.Component {
           const randomNumber = (Math.round(Math.random() * (100000 - 1)) + 1).toString()
 
           const userid = timestamp + randomNumber
-          const username = ''
-          const email = ''
+          const username = 'paschcua'
+          const email = 'paschcua@hispeed.ch'
 
           const firebaseStartingPath = 'users/'
           const firebaseParentPath = userid
@@ -54,7 +54,7 @@ export class StartScreen extends React.Component {
     const { isLoaded } = this.state
 
     return (
-      <ImageBackground source={require('../../assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
+      <ImageBackground source={require('../../assets/screen-start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
         <Container style={styles.container}>
           { isLoaded
             ? <Content>

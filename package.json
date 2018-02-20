@@ -7,6 +7,7 @@
     "start": "node_modules/react-native/packager/packager.sh",
     "eslint": "eslint",
     "test": "jest",
+    "ios": "react-native run-ios",
     "android": "adb devices && adb reverse tcp:8081 tcp:8081 && react-native run-android"
   },
   "dependencies": {

@@ -10,7 +10,7 @@ export function setData (firebaseStartingPath, firebaseParentPath, firebaseUserD
 
   if ((typeof firebaseUserDataObject === 'object') && (firebaseUserDataObject !== null)) {
     // 1. REGISTER NEW USER
-    // Push the Onject to Firebase (e.g. 'users/123456756' + '{username: eaj, email: eaj@eaj.com}')
+    // Push the Object to Firebase (e.g. 'users/123456756' + '{username: eaj, email: eaj@eaj.com}')
     firebase.database().ref(firebaseStartingPath + firebaseParentPath).set({
       username: firebaseUserDataObject.username,
       email: firebaseUserDataObject.email,
