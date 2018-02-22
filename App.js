@@ -2,14 +2,18 @@ import React from 'react'
 import { AppRegistry, Alert, AsyncStorage, Animated, Easing, Image, ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { Container, Content, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
-import { Row, Grid } from 'react-native-easy-grid'
+import I18n from 'react-native-i18n'
+// import { Row, Grid } from 'react-native-easy-grid'
 import { default as Sound } from 'react-native-sound'
-import * as Animatable from 'react-native-animatable'
+// import * as Animatable from 'react-native-animatable'
 
 import { checkNetworkConnection } from './components/_NetworkConnection'
 import { StartScreen } from './components/Start'
 import { RegisterScreen } from './components/Register'
 import { AnimateWrapperImage } from './components/AnimateWrapperImage'
+
+/* Preload sound assets */
+const sndBtn = new Sound(require('./assets/snd/btn.mp3'))
 
 export class HomeScreen extends React.Component {
   constructor (props) {
@@ -20,6 +24,7 @@ export class HomeScreen extends React.Component {
       startAnimationLoop: false
     }
     Sound.setCategory('Playback')
+    I18n.fallbacks = true
   }
   async setLocalization (t) {
     try {
@@ -29,11 +34,9 @@ export class HomeScreen extends React.Component {
     }
   }
 
-  playSndSetLocalizationAndRedirect (sndFile, loop, navigate) {
-    sndFile.play()
-    loop ? sndFile.setNumberOfLoops(-1) : null
-    // this.setLocalization('de') // set language and go to start screen
-    navigate ? navigate('Start') : null
+  playSndAndRedirect (sndFile, loop, navigate, navPath) {
+    loop ? sndFile.setNumberOfLoops(-1).play() : sndFile.play()
+    navigate && navPath ? navigate(navPath) : null
   }
 
   componentWillMount () {
@@ -57,17 +60,13 @@ export class HomeScreen extends React.Component {
     const sndTheme = new Sound(require('./assets/snd/setuniman.mp3'), (error) => {
       if (error) { /*console.warn('failed to load the sound', error)*/ }
       // console.warn('duration in seconds: ' + sndTheme.getDuration() + 'number of channels: ' + sndTheme.getNumberOfChannels())
-      this.playSndSetLocalizationAndRedirect(sndTheme, 1, false)
+      this.playSndAndRedirect(sndTheme, 1, false, false)
     })
   }
 
   render () {
     const { navigate } = this.props.navigation
     const { isLoading, isInitialStart, startAnimationLoop } = this.state
-
-    const sndBtn = new Sound(require('./assets/snd/btn.mp3'), (error) => {
-      if (error) { /*console.warn('failed to load the sound', error)*/ }
-    })
 
     // Wait until AsyncStorage loaded
     if (isLoading) {
@@ -77,6 +76,9 @@ export class HomeScreen extends React.Component {
         </Container>
       )
     }
+
+    // Auto localization
+    // this.setLocalization('de') // Overwrite localization only via settings
 
     // 1. isInitialStart === true: First start of the App: Show Initial Screen
     // 2. isInitialStart === false: Navigate directly to gamescreen (User is already registered)
@@ -90,62 +92,9 @@ export class HomeScreen extends React.Component {
         delay={1000}
       />
       <ImageBackground source={require('./assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
-        <TouchableWithoutFeedback onPress={() => this.playSndSetLocalizationAndRedirect(sndBtn, false, navigate)}>
+        <TouchableWithoutFeedback onPress={() => this.playSndAndRedirect(sndBtn, false, navigate, 'Start')}>
           <Container style={styles.container}>
             <StatusBar hidden />
-            { /* !isInitialStart
-              ? <Content>
-
-                <Grid style={styles.titleWrapper}>
-                  <Row>
-                    <AnimateWrapperImage
-                      style={styles.title}
-                      source={require('./assets/start-title.png')}
-                      animation={'fadeInDown'}
-                      duration={2000}
-                    />
-                  </Row>
-                </Grid>
-
-                <AnimateWrapperImage
-                  style={styles.stein}
-                  source={require('./assets/start-card-stone.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'fadeInLeftBig'}
-                  iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 4400 : 1500}
-                />
-
-                <AnimateWrapperImage
-                  style={styles.schere}
-                  source={require('./assets/start-card-schere.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'fadeInLeft'}
-                  iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 4500 : 1700}
-                />
-                <AnimateWrapperImage
-                  style={styles.papier}
-                  source={require('./assets/start-card-paper.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'fadeInDown'}
-                  iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 4600 : 1600}
-                />
-                <AnimateWrapperImage
-                  style={styles.echse}
-                  source={require('./assets/start-card-echse.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'fadeInRight'}
-                  iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 4200 : 1700}
-                />
-                <AnimateWrapperImage
-                  style={styles.spock}
-                  source={require('./assets/start-card-spock.png')}
-                  animation={startAnimationLoop ? 'pulse' : 'fadeInRightBig'}
-                  iterationCount={startAnimationLoop ? 'infinite' : 1}
-                  duration={startAnimationLoop ? 4300 : 1500}
-                  onAnimationEnd={() => this.setState({startAnimationLoop: true})}
-                />
-              </Content>
-            : null /*navigate('Start')*/ }
           </Container>
         </TouchableWithoutFeedback>
       </ImageBackground>

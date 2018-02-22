@@ -1,5 +1,6 @@
 import React from 'react'
 import { translations as t } from '../_Localization'
+import I18n from 'react-native-i18n'
 
 import { AsyncStorage, ImageBackground, StyleSheet } from 'react-native'
 import { Container, Content, Button } from 'native-base'
@@ -18,7 +19,7 @@ export class StartScreen extends React.Component {
 
   componentWillMount () {
     AsyncStorage.getItem('ls_localization').then((localization) => {
-      t.setLanguage(localization)
+      // t.setLanguage(localization)
       AsyncStorage.getItem('ls_userid').then((localStorageUserid) => {
         if (localStorageUserid === null) {
           // No userId in localStorage present, therefore register a new user
@@ -54,14 +55,14 @@ export class StartScreen extends React.Component {
     const { isLoaded } = this.state
 
     return (
-      <ImageBackground source={require('../../assets/screen-start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
+      <ImageBackground source={require('../../assets/screen-start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImageResizeMode}>
         <Container style={styles.container}>
           { isLoaded
             ? <Content>
               <Grid>
                 <Col>
                   <Button block light onPress={() => navigate('Register')} title='Lets Register'>
-                    <Animatable.Text animation='fadeIn' iterationCount='infinite'>{t.welcome}</Animatable.Text>
+                    <Animatable.Text animation='fadeIn' iterationCount='infinite'>{I18n.t('welcome')}</Animatable.Text>
                   </Button>
                 </Col>
               </Grid>
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     ...StyleFlexAndWidth
   },
-  backgroundImage2: {
+  backgroundImageResizeMode: {
     resizeMode: 'cover'
   }
 })
