@@ -100,10 +100,10 @@ export class HomeScreen extends React.Component {
     }
 
     // Load Snd Btn
-    const sndBtn = new Sound(require('./assets/snd/btn.mp3'))
+    const sndBtn = new Sound(require('./assets/snd/whosh.mp3'))
 
-    // Auto localization
-    // this.setLocalization('de') // Overwrite localization only via settings
+    // Auto localization (i18N)
+    this.setLocalization(I18n.currentLocale())
 
     // 1. isInitialStart === true: First start of the App: Show Initial Screen
     // 2. isInitialStart === false: Navigate directly to gamescreen (User is already registered)
@@ -117,7 +117,7 @@ export class HomeScreen extends React.Component {
                 <Animatable.Text style={styles.btnText} animation='fadeHalf' easing='ease' duration={2000} iterationCount='infinite'>{I18n.t('welcomeStartBtn')}</Animatable.Text>
               </Button>
             </Container>
-          : console.warn('NOT INITIAL START') }
+          : navigate('Start') }
         </ImageBackground>
       </Container>
     )
@@ -147,9 +147,10 @@ const styles = StyleSheet.create({
   backgroundImage2: {
     resizeMode: 'cover'
   },
+  /*
   blackOverlay: {
     top: 0, bottom: 0, left: 0, right: 0, position: 'absolute', zIndex: 99, resizeMode: 'stretch'
-  },
+  },*/
 
   titleWrapper: { flex: 1, width: 600, alignSelf: 'center', marginBottom: 300 },
   title: {
@@ -164,10 +165,9 @@ const styles = StyleSheet.create({
     paddingRight: 100,
     paddingTop: 10,
     paddingBottom: 10,
-    borderWidth: 1,
+    borderWidth: 4,
     borderColor: '#F9AA23',
-    opacity: 0.9,
-    zIndex: 1
+    opacity: 0.9
   },
   btnText: {
     fontFamily: config.fonts.patua,

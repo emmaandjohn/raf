@@ -1,12 +1,14 @@
 import React from 'react'
+import { config } from '../../config'
 import { translations as t } from '../_Localization'
 import I18n from 'react-native-i18n'
 
-import { AsyncStorage, ImageBackground, StyleSheet } from 'react-native'
-import { Container, Content, Button } from 'native-base'
-import { Col, Grid } from 'react-native-easy-grid'
+import { AsyncStorage, ImageBackground, StyleSheet, StatusBar } from 'react-native'
+import { Container, Content, Text } from 'native-base'
+import { Row, Grid } from 'react-native-easy-grid'
 import * as Animatable from 'react-native-animatable'
 
+import TitleTop from '../TitleTop'
 import { setData } from '../_Firebase/Set'
 
 export class StartScreen extends React.Component {
@@ -27,8 +29,8 @@ export class StartScreen extends React.Component {
           const randomNumber = (Math.round(Math.random() * (100000 - 1)) + 1).toString()
 
           const userid = timestamp + randomNumber
-          const username = 'paschcua'
-          const email = 'paschcua@hispeed.ch'
+          const username = ''
+          const email = ''
 
           const firebaseStartingPath = 'users/'
           const firebaseParentPath = userid
@@ -55,21 +57,18 @@ export class StartScreen extends React.Component {
     const { isLoaded } = this.state
 
     return (
-      <ImageBackground source={require('../../assets/screen-start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImageResizeMode}>
-        <Container style={styles.container}>
-          { isLoaded
-            ? <Content>
-              <Grid>
-                <Col>
-                  <Button block light onPress={() => navigate('Register')} title='Lets Register'>
-                    <Animatable.Text animation='fadeIn' iterationCount='infinite'>{I18n.t('welcome')}</Animatable.Text>
-                  </Button>
-                </Col>
-              </Grid>
-            </Content>
-            : null }
-        </Container>
-      </ImageBackground>
+      <Container>
+        <StatusBar hidden />
+        <ImageBackground source={require('../../assets/screen-start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImageResizeMode}>
+          <Container style={styles.container}>
+            <Grid>
+              <Row>
+                <TitleTop titleText={I18n.t('Title_Choose_Favorite')} />
+              </Row>
+            </Grid>
+          </Container>
+        </ImageBackground>
+      </Container>
     )
   }
 }
@@ -81,14 +80,21 @@ const StyleFlexAndWidth = {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    ...StyleFlexAndWidth
-  },
   backgroundImage: {
     ...StyleFlexAndWidth
   },
   backgroundImageResizeMode: {
     resizeMode: 'cover'
+  },
+  titleStyle1: {
+    fontFamily: config.fonts.patua,
+    color: '#F9AA23',
+    fontSize: 22,
+    textAlign: 'center',
+    padding: 15,
+    flex: 1,
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    height: 63
   }
 })
