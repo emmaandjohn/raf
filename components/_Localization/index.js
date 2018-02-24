@@ -2,10 +2,12 @@ import I18n from 'react-native-i18n'
 
 export const translations = I18n.translations = {
   de: {
-    welcome: 'Willkommen Spieler!'
+    welcome: 'Willkommen Spieler!',
+    welcomeStartBtn: 'START'
   },
   en: {
-    welcome: 'Welcome Player!'
+    welcome: 'Welcome Player!',
+    welcomeStartBtn: 'PLAY'
   }
 }
 

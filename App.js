@@ -1,30 +1,32 @@
 import React from 'react'
-import { AppRegistry, Alert, AsyncStorage, Animated, Easing, Image, ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
-import { Container, Content, Button, Text } from 'native-base'
+import { config } from './config'
+import { AppState, AppRegistry, Alert, AsyncStorage, Animated, Easing, ImageBackground, Platform, StatusBar, StyleSheet } from 'react-native'
+import { Container, Button, Text } from 'native-base'
 import { StackNavigator } from 'react-navigation'
 import I18n from 'react-native-i18n'
 // import { Row, Grid } from 'react-native-easy-grid'
 import { default as Sound } from 'react-native-sound'
-// import * as Animatable from 'react-native-animatable'
+import * as Animatable from 'react-native-animatable'
+import './components/Animations'
 
 import { checkNetworkConnection } from './components/_NetworkConnection'
 import { StartScreen } from './components/Start'
 import { RegisterScreen } from './components/Register'
 import { AnimateWrapperImage } from './components/AnimateWrapperImage'
 
-/* Preload sound assets */
-const sndBtn = new Sound(require('./assets/snd/btn.mp3'))
-
 export class HomeScreen extends React.Component {
+
   constructor (props) {
     super(props)
     this.state = {
+      appState: AppState.currentState,
       isInitialStart: false,
       isLoading: true,
-      startAnimationLoop: false
+      startAnimationLoop: false,
+      isLoaded: false
     }
-    Sound.setCategory('Playback')
     I18n.fallbacks = true
+    Sound.setCategory('Playback')
   }
   async setLocalization (t) {
     try {
@@ -54,19 +56,39 @@ export class HomeScreen extends React.Component {
         })
       }
     })
+    this.setState({
+      isLoaded: true
+    })
   }
 
   componentDidMount () {
-    const sndTheme = new Sound(require('./assets/snd/setuniman.mp3'), (error) => {
-      if (error) { /*console.warn('failed to load the sound', error)*/ }
-      // console.warn('duration in seconds: ' + sndTheme.getDuration() + 'number of channels: ' + sndTheme.getNumberOfChannels())
-      this.playSndAndRedirect(sndTheme, 1, false, false)
-    })
+    if (Platform.OS === 'ios') {
+      const sndTheme = new Sound(require('./assets/snd/setuniman.mp3'), (error) => {
+        this.playSndAndRedirect(sndTheme, 1, false, false)
+      })
+    } else {
+      AppState.addEventListener('change', this._handleAppStateChange)
+    }
+  }
+
+  componentWillUnmount () {
+    // AppState.removeEventListener('change', this._handleAppStateChange)
+  }
+
+  _handleAppStateChange = (currentAppState) => {
+    if (currentAppState == 'background' || currentAppState == 'inactive') {
+      this.state.sndTheme.release() // Pause sound on appLeave/exit
+    }
+    else if (currentAppState == 'active') {
+      this.setState({ sndTheme: new Sound(require('./assets/snd/setuniman.mp3'), (error) => {
+        this.playSndAndRedirect(this.state.sndTheme, 1, false, false)
+      })})
+    }
   }
 
   render () {
     const { navigate } = this.props.navigation
-    const { isLoading, isInitialStart, startAnimationLoop } = this.state
+    const { isLoaded, isLoading, isInitialStart, startAnimationLoop } = this.state
 
     // Wait until AsyncStorage loaded
     if (isLoading) {
@@ -77,6 +99,9 @@ export class HomeScreen extends React.Component {
       )
     }
 
+    // Load Snd Btn
+    const sndBtn = new Sound(require('./assets/snd/btn.mp3'))
+
     // Auto localization
     // this.setLocalization('de') // Overwrite localization only via settings
 
@@ -84,20 +109,16 @@ export class HomeScreen extends React.Component {
     // 2. isInitialStart === false: Navigate directly to gamescreen (User is already registered)
     return (
       <Container>
-      <AnimateWrapperImage
-        style={styles.blackOverlay}
-        source={require('./assets/bg-black.jpg')}
-        animation={'fadeOut'}
-        duration={3000}
-        delay={1000}
-      />
-      <ImageBackground source={require('./assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
-        <TouchableWithoutFeedback onPress={() => this.playSndAndRedirect(sndBtn, false, navigate, 'Start')}>
-          <Container style={styles.container}>
-            <StatusBar hidden />
-          </Container>
-        </TouchableWithoutFeedback>
-      </ImageBackground>
+        <StatusBar hidden />
+        <ImageBackground source={require('./assets/start-bg.jpg')} style={styles.backgroundImage} imageStyle={styles.backgroundImage2}>
+          { isInitialStart
+            ? <Container style={styles.container}>
+              <Button style={styles.btnStart} large dark onPress={() => this.playSndAndRedirect(sndBtn, false, navigate, 'Start')}>
+                <Animatable.Text style={styles.btnText} animation='fadeHalf' easing='ease' duration={2000} iterationCount='infinite'>{I18n.t('welcomeStartBtn')}</Animatable.Text>
+              </Button>
+            </Container>
+          : console.warn('NOT INITIAL START') }
+        </ImageBackground>
       </Container>
     )
   }
@@ -108,14 +129,16 @@ const StyleFlexAndWidth = {
   width: null,
   height: null
 }
-const StyleAbsoluteAndContainImage = {
+/* const StyleAbsoluteAndContainImage = {
   position: 'absolute',
   resizeMode: 'contain'
-}
+} */
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
     ...StyleFlexAndWidth
   },
   backgroundImage: {
@@ -125,7 +148,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover'
   },
   blackOverlay: {
-    top: 0, bottom: 0, left: 0, right: 0, position: 'absolute', zIndex: 3, resizeMode: 'stretch'
+    top: 0, bottom: 0, left: 0, right: 0, position: 'absolute', zIndex: 99, resizeMode: 'stretch'
   },
 
   titleWrapper: { flex: 1, width: 600, alignSelf: 'center', marginBottom: 300 },
@@ -134,55 +157,22 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     ...StyleFlexAndWidth
   },
-  stein: {
-    zIndex: 2,
-    top: 120,
-    left: -80,
-    width: 328,
-    height: 291,
-    ...StyleAbsoluteAndContainImage
+  btnStart: {
+    alignSelf: 'center',
+    top: 100,
+    paddingLeft: 100,
+    paddingRight: 100,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F9AA23',
+    opacity: 0.9,
+    zIndex: 1
   },
-  schere: {
-    zIndex: 1,
-    top: 80,
-    left: 120,
-    height: 215,
-    width: 172,
-    ...StyleAbsoluteAndContainImage
-  },
-  papier: {
-    zIndex: 2,
-    top: 80,
-    left: 230,
-    height: 285,
-    width: 199,
-    ...StyleAbsoluteAndContainImage
-  },
-  echse: {
-    zIndex: 1,
-    top: 90,
-    left: 370,
-    height: 282,
-    width: 245,
-    ...StyleAbsoluteAndContainImage
-  },
-  spock: {
-    zIndex: 2,
-    top: 150,
-    left: 440,
-    height: 300,
-    width: 312,
-    ...StyleAbsoluteAndContainImage
-  },
-
-  row: {
-    marginTop: 10
-  },
-  rowTop: {
-    marginTop: 35
-  },
-  btnFullWidth: {
-    flex: 1
+  btnText: {
+    fontFamily: config.fonts.patua,
+    color: '#F9AA23',
+    fontSize: 22
   }
 })
 

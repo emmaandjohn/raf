@@ -76,5 +76,10 @@
   "upstreamRepo": "git@github.com:GeekyAnts/react-native-native-base-seed.git",
   "jest": {
     "preset": "jest-react-native"
+  },
+  "rnpm": {
+      "assets": [
+  	     "./assets/fonts/"
+      ]
   }
 }
